@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Oct  9 19:36:44 2022
-
-@author: wonglz
-"""
 
 import networkx as nx
 from path_homology import edgelist_to_graph, H_path, H_path_A
@@ -139,15 +134,5 @@ H, C, Diffs, A, O = H_path(G, cutoff = 5)
 print('C:', C)
 print('H:', H)
 
-#%%
-# nx.draw(G, with_labels = True, node_color = 'white')
 
-# G = G.to_undirected().to_directed()
-
-# G = nx.contracted_nodes(G, '9', '0', self_loops = False)
-# G = nx.contracted_nodes(G, '8', '9', self_loops = False)
-# G = nx.contracted_nodes(G, '7', '8', self_loops = False)
-# G = nx.contracted_nodes(G, '6', '7', self_loops = False)
-
-#%%
 
