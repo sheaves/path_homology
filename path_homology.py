@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Updated on Oct 6, 2022.
-
-@author: LiangZe
-
 A script to compute the path homology for a digraph.
 
 Assumptions made:

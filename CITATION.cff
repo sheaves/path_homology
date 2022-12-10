@@ -15,5 +15,5 @@ authors:
     given-names: Liang Ze
 title: "Cofibration category of digraphs for path homology"
 version: 1.0.0
-doi: arXiv TBD
+doi: https://github.com/sheaves/path_homology
 date-released: 2022-25-12
