@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 A script to compute the path homology for a digraph.
-
-Assumptions made:
-    0) No self-loops or multiple edges (they will be ignored)
-    1) Degeneracies are killed
-    2) k = Real Numbers
 """
 
 from sympy import Matrix
