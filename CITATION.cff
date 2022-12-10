@@ -13,7 +13,7 @@ authors:
     given-names: Maru
   - family-names: Wong
     given-names: Liang Ze
-title: "Cofibration category of digraphs for path homology"
+title: "Python script for computing path homology of digraphs"
 version: 1.0.0
 doi: https://github.com/sheaves/path_homology
-date-released: 2022-25-12
+date-released: 2022-09-12
