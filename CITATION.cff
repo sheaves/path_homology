@@ -15,5 +15,5 @@ authors:
     given-names: Liang Ze
 title: "Python script for computing path homology of digraphs"
 version: 1.0.0
-doi: https://github.com/sheaves/path_homology
+url: "https://github.com/sheaves/path_homology"
 date-released: 2022-09-12
