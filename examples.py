@@ -111,7 +111,7 @@ edgelist = [ # boundary of subdivided 3 cube
     'tl', 'lc', 'wn', 'nf', 'zq', 'qi',
     'sk', 'kb',
     'yp', 'ph',
-    'v@', '@e', 'm@', '@n', 'k@', '@p', # adding the center
+    # 'v@', '@e', 'm@', '@n', 'k@', '@p', # adding the center
 ]
 #%%
 edgelist = [ # Theorem 6.1 of https://arxiv.org/pdf/1803.07497.pdf
@@ -129,7 +129,7 @@ edgelist = [ # Larger example
 #%%
 G = edgelist_to_graph(edgelist)
 
-H, C, Diffs, A, O = H_path(G, cutoff = 5)
+H, C, Diffs, R, O = H_path(G, cutoff = 5)
 
 print('C:', C)
 print('H:', H)
