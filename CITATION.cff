@@ -1,0 +1,19 @@
+cff-version: 1.0.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Carranza
+    given-names: Daniel
+  - family-names: Doherty
+    given-names: Brandon
+  - family-names: Kapulkin
+    given-names: Krzysztof
+  - family-names: Opie
+    given-names: Morgan
+  - family-names: Sarazola
+    given-names: Maru
+  - family-names: Wong
+    given-names: Liang Ze
+title: "Cofibration category of digraphs for path homology"
+version: 1.0.0
+doi: arXiv TBD
+date-released: 2022-25-12
