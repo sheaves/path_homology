@@ -13,9 +13,9 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 
-def A_n(G, cutoff = 5):
+def R_n(G, cutoff = 5):
     """
-    Generate paths in G, up to length = cutoff.
+    Generate regular allowed paths in G, up to length = cutoff.
     G : networkx DiGraph
     
     Paths are represented as tuples of vertices
@@ -31,24 +31,24 @@ def A_n(G, cutoff = 5):
     ]
     """
     # Initialize list of paths
-    A = []
+    R = []
 
-    # A[0]
-    A.append(list(G))
+    # R[0]
+    R.append(list(G))
     
-    # A[1]
-    A.append(list(G.edges))
+    # R[1]
+    R.append(list(G.edges))
     
-    # A[n], 1 < n <= cutoff
+    # R[n], 1 < n <= cutoff
     for n in range(2,cutoff + 1):
-        A_n = []
-        for e in A[1]:
-            for f in A[n-1]:
+        R_n = []
+        for e in R[1]:
+            for f in R[n-1]:
                if e[1] == f[0]:
-                   A_n.append((e[0],) + f)
-        A.append(A_n)
+                   R_n.append((e[0],) + f)
+        R.append(R_n)
     
-    return A
+    return R
 
 def d(path):
     """
@@ -65,52 +65,52 @@ def d(path):
     
     return pd.Series(coeffs, name = path)
 
-def D_full(A, n):
+def D_full(R, n):
     """
     Compute differentials of all paths of length n
     
-    A : list of list of paths (see docstring of A_n)
+    R : list of list of paths (see docstring of R_n)
     """
-    if len(A[n]) > 0:
-        df = pd.concat([d(path) for path in A[n]], axis = 1)    
+    if len(R[n]) > 0:
+        df = pd.concat([d(path) for path in R[n]], axis = 1)    
         return df.fillna(0)
     else:
         return pd.DataFrame()
     
-def O_n(A):
+def O_n(R):
     """
     Generate Omega chain complex for path homology 
-    from list of list of paths, A (see docstring of A_n)
+    from list of list of paths, R (see docstring of R_n)
 
     O[n] contains generators for Omega_n,
-    expressed as lists of linear combinations of paths in A[n]
+    expressed as lists of linear combinations of paths in R[n]
     
     Linear combinations are expressed as dictionaries:
-        - keys are elements of A[n]
+        - keys are elements of R[n]
         - values are the coefficients in the linear combination
     """
     O = []
     
     # O_0
-    O.append([{(v,):1} for v in A[0]])
+    O.append([{(v,):1} for v in R[0]])
     
     # O_1
-    O.append([{e:1} for e in A[1]])
+    O.append([{e:1} for e in R[1]])
     
     # O_n
-    for n in range(2,len(A)):
-        disallowed = D_full(A,n).drop(A[n-1], errors = 'ignore')
+    for n in range(2,len(R)):
+        disallowed = D_full(R,n).drop(R[n-1], errors = 'ignore')
             
         if len(disallowed) > 0:
             O_n = []
             basis = Matrix(disallowed).nullspace()
             for v in basis:
                 v = np.array(v, dtype = float)[:,0]
-                v = pd.Series(v, index = A[n])
+                v = pd.Series(v, index = R[n])
                 v = v[v != 0]
                 O_n.append(dict(v))
         else:
-            O_n = [{p:1} for p in A[n]]            
+            O_n = [{p:1} for p in R[n]]            
         O.append(O_n)    
         
     return O
@@ -132,7 +132,7 @@ def pprint(coeffs_dict, sep = ''):
         result += f'{sign}{val}{key_string} '
     return result
 
-def D(A, O, n, sep = ''):
+def D(R, O, n, sep = ''):
     """
     Generate matrix for n^th differential in Omega chain complex,
     going from O[n] --> O[n-1]
@@ -143,18 +143,18 @@ def D(A, O, n, sep = ''):
     
     sep is used for pretty printing of generators
     """
-    D_f = D_full(A,n)
+    D_f = D_full(R,n)
     
     if n == 0:
         D_f.columns = [f"+ {c} " for c in D_f.columns]
         return D_f        
     
-    if len(A[n-1]) > 0:
-        index = pd.MultiIndex.from_tuples(A[n-1])
+    if len(R[n-1]) > 0:
+        index = pd.MultiIndex.from_tuples(R[n-1])
     else:
         index = []
     
-    # Differentials of generators of O[n] in terms of A[n-1]
+    # Differentials of generators of O[n] in terms of R[n-1]
     D = pd.DataFrame(index = index)
     for coeffs in O[n]:
         v = pd.Series(0, index = index)
@@ -162,7 +162,7 @@ def D(A, O, n, sep = ''):
             v = v.add(D_f[key]*coeffs[key], fill_value = 0)
         D[pprint(coeffs, sep)] = v
     
-    # Generators of O[n-1] in terms of A[n-1]
+    # Generators of O[n-1] in terms of R[n-1]
     B = pd.DataFrame(index = index)
     for coeffs in O[n-1]:
         v = pd.Series(0, index = index)
@@ -176,27 +176,27 @@ def D(A, O, n, sep = ''):
     
     return Binv @ D
 
-def H_path_A(A, sep = ''):
+def H_path_R(R, sep = ''):
     """
-    Compute the path homology of a path set A.
+    Compute the path homology of a path set R.
     
     Returns:
         H : dimensions of path homology
         C : dimensions of Omega chain complex
         Diffs : differentials
-        A : allowed paths
+        R : regular allowed paths
         O : generators of Omega
     """    
-    O = O_n(A)
-    cutoff = len(A) - 1
+    O = O_n(R)
+    cutoff = len(R) - 1
 
-    Diffs = [D(A,O,i,sep) for i in range(cutoff + 1)]
+    Diffs = [D(R,O,i,sep) for i in range(cutoff + 1)]
     C = [df.shape[1] for df in Diffs]
     
     H = []
     
     # H_0
-    ker = len(A[0])
+    ker = len(R[0])
     img = len(Matrix(Diffs[1]).columnspace())
     H.append(ker - img)
     
@@ -206,7 +206,7 @@ def H_path_A(A, sep = ''):
         img = len(Matrix(Diffs[n+1]).columnspace())
         H.append(ker - img)
   
-    return H, C, Diffs, A, O    
+    return H, C, Diffs, R, O    
     
 
 def H_path(G, cutoff = 5, sep = ''):
@@ -217,12 +217,12 @@ def H_path(G, cutoff = 5, sep = ''):
         H : dimensions of path homology
         C : dimensions of Omega chain complex
         Diffs : differentials
-        A : allowed paths
+        R : regular allowed paths
         O : generators of Omega
     """
-    A = A_n(G, cutoff = cutoff)
+    R = R_n(G, cutoff = cutoff)
     
-    return H_path_A(A, sep = sep)
+    return H_path_R(R, sep = sep)
 
 
 def edgelist_to_graph(edgelist, sep = '', vertices = None):

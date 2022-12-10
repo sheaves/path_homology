@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import networkx as nx
-from path_homology import edgelist_to_graph, H_path, H_path_A
+from path_homology import edgelist_to_graph, H_path, H_path_R
 
 #%%
 edgelist = [# Commuting square
